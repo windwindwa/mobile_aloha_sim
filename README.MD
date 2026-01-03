@@ -15,11 +15,6 @@
 执行`display_aloha_v00.launch`
 
 
-# 这是一个为你定制的 `README.md` 文档。它不仅仅是一个使用说明，还包含了**环境复现的核心提示词（Prompt）**，正如你所强调的——“生产过程更加重要”。
-
-你可以将此内容直接保存为项目根目录下的 `README.md`。
-
----
 
 # 🤖 ROS1 Hybrid Development Environment (Docker + Pixi)
 
