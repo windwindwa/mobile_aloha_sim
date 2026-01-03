@@ -1,0 +1,4 @@
+tracer2_description
+/home/rosdev/mobile_aloha_ws/devel/.private/tracer2_description/lib/pkgconfig/tracer2_description.pc /home/rosdev/mobile_aloha_ws/devel/lib/pkgconfig/tracer2_description.pc
+/home/rosdev/mobile_aloha_ws/devel/.private/tracer2_description/share/tracer2_description/cmake/tracer2_descriptionConfig.cmake /home/rosdev/mobile_aloha_ws/devel/share/tracer2_description/cmake/tracer2_descriptionConfig.cmake
+/home/rosdev/mobile_aloha_ws/devel/.private/tracer2_description/share/tracer2_description/cmake/tracer2_descriptionConfig-version.cmake /home/rosdev/mobile_aloha_ws/devel/share/tracer2_description/cmake/tracer2_descriptionConfig-version.cmake

@@ -1,1 +1,69 @@
-.vscode
+# ==========================
+# 🐍 Python & Pixi (关键)
+# ==========================
+# Pixi 安装的本地环境 (必须忽略，因为它很大且只属于当前机器)
+.pixi/
+
+# Python 缓存和编译文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 其他虚拟环境 (以防万一你用了 venv/conda)
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================
+# 🤖 ROS 2 & Colcon 构建文件
+# ==========================
+# 编译生成的中间文件 (永远不要上传)
+build/
+install/
+log/
+
+# ROS 1 的遗留目录 (如果你用 ROS 1)
+devel/
+.catkin_workspace
+
+# ==========================
+# 🐳 Docker & VS Code
+# ==========================
+# VS Code 本地配置 (个人的颜色设置等不要上传)
+.vscode/
+!.vscode/extensions.json  # 但保留推荐插件列表
+!.vscode/settings.json    # (可选) 如果你想强制统一团队格式，可以保留这一行
+
+# ⚠️ 重要：绝对不要忽略 .devcontainer 文件夹！
+# !.devcontainer/
+
+# Docker 相关的本地覆盖文件
+docker-compose.override.yml
+
+# ==========================
+# 🍎 OS & System Junk
+# ==========================
+# Mac 系统垃圾
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux 临时文件
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==========================
+# 🛡️ IDE & Editors
+# ==========================
+.idea/
+*.swp
+*.swo
+*~

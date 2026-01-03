@@ -1,0 +1,4 @@
+aloha_new_description
+/home/rosdev/mobile_aloha_ws/devel/.private/aloha_new_description/lib/pkgconfig/aloha_new_description.pc /home/rosdev/mobile_aloha_ws/devel/lib/pkgconfig/aloha_new_description.pc
+/home/rosdev/mobile_aloha_ws/devel/.private/aloha_new_description/share/aloha_new_description/cmake/aloha_new_descriptionConfig-version.cmake /home/rosdev/mobile_aloha_ws/devel/share/aloha_new_description/cmake/aloha_new_descriptionConfig-version.cmake
+/home/rosdev/mobile_aloha_ws/devel/.private/aloha_new_description/share/aloha_new_description/cmake/aloha_new_descriptionConfig.cmake /home/rosdev/mobile_aloha_ws/devel/share/aloha_new_description/cmake/aloha_new_descriptionConfig.cmake
