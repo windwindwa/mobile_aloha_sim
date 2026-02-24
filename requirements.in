@@ -1,0 +1,6 @@
+# 在这里列出你需要的包
+# rich
+# requests
+# 注意：Isaac Sim 通常自带了 opencv-headless，
+# 如果需要 GUI 功能才装 opencv-python，否则建议跳过
+# opencv-python-headless

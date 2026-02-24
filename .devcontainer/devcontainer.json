@@ -1,67 +1,46 @@
 {
-    "name": "Mobile Aloha Sim Dev",
+    "name": "Isaac Sim Lite",
     "build": {
         "dockerfile": "Dockerfile",
         "context": ".."
     },
-
-    "remoteUser": "rosdev",
-    "containerUser": "rosdev",
-    // 关键配置：默认为 true，它会自动将容器内的 'remoteUser' UID 
-    // 修改为与宿主机当前用户一致。
-    "updateRemoteUserUID": true
-
-    // =================================================================
-    // 【核心配置】挂载路径与工作区设置
-    // =================================================================
-    // source: 宿主机（Ubuntu）上的绝对路径
-    // target: 容器内的绝对路径 (建议以 _ws 结尾，明确这是工作空间)
-    "workspaceMount": "source=/home/lzg/codes/mobile_aloha_sim,target=/home/rosdev/mobile_aloha_ws,type=bind",
-    
-    // 打开容器时默认进入的目录
-    "workspaceFolder": "/home/rosdev/mobile_aloha_ws",
-
-
-
-    // 1. 直接继承宿主机的 DISPLAY 环境变量
-    // ${localEnv:DISPLAY} 是 VS Code 的变量，它会自动获取你当前 Ubuntu 的屏幕编号 (通常是 :0 or :1)
-    "containerEnv": {
-        "DISPLAY": "${localEnv:DISPLAY}",
-        "QT_X11_NO_MITSHM": "1" // 修复某些 Qt 应用在容器内黑屏的问题
-    },
-
-    // 2. 挂载 X11 Socket 文件
+    // 关键运行参数：GPU 支持与 IPC 通信
     "runArgs": [
-        "--network=host", // 关键：共享网络栈
-        "--volume=/tmp/.X11-unix:/tmp/.X11-unix", // 关键：共享图形接口
-        "--cap-add=SYS_PTRACE",
-
-        "--security-opt=seccomp:unconfined",
-        // 如果你有 NVIDIA 显卡并安装了 nvidia-container-toolkit，请加上下面这行：
-        "--gpus", "all" 
+        "--gpus", "all",
+        "--network=host",
+        "--ipc=host",
+        "--privileged"
+    ],
+    "workspaceMount": "source=${localWorkspaceFolder},target=/work,type=bind",
+    "workspaceFolder": "/work",
+    
+    // 关键：使用 Named Volume 持久化第三方包目录
+    // 即使容器删除重建，这个卷里的包还在，无需重装
+    "mounts": [
+        "source=isaac-sim-deps-vol,target=/opt/isaac_pkgs,type=volume"
     ],
 
-    // ... 其他配置 ...
-
-    // 容器内预装 VS Code 插件
+    // VSCode 配置：让 IntelliSense 识别路径
     "customizations": {
         "vscode": {
-            "extensions": [
-                "ms-iot.vscode-ros",           // ROS 核心插件
-                "ms-python.python",            // Python 支持
-                "ms-azuretools.vscode-docker", // Docker 工具
-                "eamodio.gitlens",             // Git 增强
-                "mhutchie.git-graph",          // Git 图形化
-                "tamasfe.even-better-toml"     // TOML 高亮 (用于 pixi)
-            ],
             "settings": {
-                "terminal.integrated.defaultProfile.linux": "zsh",
-                "python.defaultInterpreterPath": "./.pixi/envs/ros1-python-env/bin/python"
-            }
+                "python.defaultInterpreterPath": "/isaac-sim/python.sh",
+                "python.analysis.extraPaths": [
+                    "/opt/isaac_pkgs"
+                ]
+            },
+            "extensions": [
+                "ms-python.python",
+                "ms-python.pylance"
+            ]
         }
     },
-    
-    // 容器创建后的钩子：初始化 ROS 工作空间
-// "postCreateCommand": "mkdir -p src && sudo rosdep init || true && rosdep update && /bin/bash -c 'source /opt/ros/noetic/setup.bash; catkin build' && echo 'source /home/rosdev/mobile_aloha_ws/devel/setup.zsh' >> ~/.zshrc"
-}
 
+    // 自动化脚本：Hash 检查 + 增量安装
+    // 逻辑：
+    // 1. 计算 requirements.in 的 SHA256
+    // 2. 对比 /opt/isaac_pkgs/.reqs.sha
+    // 3. 不一致 -> 调用 Isaac pip 安装 -> 更新 SHA 文件
+    // 4. 一致 -> 跳过
+    "postStartCommand": "bash -c 'mkdir -p /opt/isaac_pkgs && REQ_FILE=/work/requirements.in && HASH_FILE=/opt/isaac_pkgs/.reqs.sha && NEW_HASH=$(sha256sum $REQ_FILE | awk \"{print \\$1}\") && OLD_HASH=$(cat $HASH_FILE 2>/dev/null || echo \"none\") && if [ \"$NEW_HASH\" != \"$OLD_HASH\" ]; then echo \"📦 Detected dependency change. Installing...\" && /isaac-sim/python.sh -m pip install --no-cache-dir --target /opt/isaac_pkgs -r $REQ_FILE && echo \"$NEW_HASH\" > $HASH_FILE && echo \"✅ Install Complete.\"; else echo \"⚡ dependencies up-to-date.\"; fi'"
+}
